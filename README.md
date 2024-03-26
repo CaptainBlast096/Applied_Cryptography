@@ -1,7 +1,7 @@
-**# Final Project**
-**## Project Description**
+# **Final Project**
+## **Project Description**
 ### Use cryptographic algorithms to encrypt an image
-**## Authors**
+## **Authors**
 * Hannah Friday
 * Jaleel Rogers
 * Gabriel Lopez
