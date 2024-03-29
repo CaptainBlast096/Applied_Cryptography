@@ -31,13 +31,19 @@ def rgb_to_binary(rgb_tuple):
 
 def encrypt_pixel(rgb_tuple):
     binary_string = rgb_to_binary(rgb_tuple)
-    # Add math here like XOR or some shit
-    encrypted_binary = binary_string
-
+    encrypted_binary = xor_encrypt(binary_string, encryption_key)
     # Convert encrypted binary string back to RGB tuple
     encrypted_r = int(encrypted_binary[:8], 2)
     encrypted_g = int(encrypted_binary[8:16], 2)
     encrypted_b = int(encrypted_binary[16:], 2)
     return (encrypted_r, encrypted_g, encrypted_b)
+
+def xor_encrypt(binary_string, key):
+    # Repeat key to match the length of the binary string
+    repeated_key = key * (len(binary_string) // len(key)) + key[:len(binary_string) % len(key)]
+    # Perform XOR encryption
+    encrypted_binary = ''.join(chr(ord(b) ^ ord(k)) for b, k in zip(binary_string, repeated_key))
+    return encrypted_binary 
+
 if __name__ == "__main__":
     main()
