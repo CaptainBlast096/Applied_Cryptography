@@ -1,7 +1,9 @@
 from PIL import Image
+#from Crypto.Cipher import AES
 
 # Encryption key
 encryption_key = b"MrKrabsTotalsBaby"
+pixel_count = 0
 
 def main():
     img = Image.open("krab.jpg")
@@ -38,12 +40,26 @@ def encrypt_pixel(rgb_tuple):
     encrypted_b = int(encrypted_binary[16:], 2)
     return (encrypted_r, encrypted_g, encrypted_b)
 
-def xor_encrypt(binary_string, key):
-    # Repeat key to match the length of the binary string
-    repeated_key = key * (len(binary_string) // len(key)) + key[:len(binary_string) % len(key)]
-    # Perform XOR encryption
-    encrypted_binary = ''.join(chr(ord(b) ^ ord(k)) for b, k in zip(binary_string, repeated_key))
-    return encrypted_binary 
+def xor_encrypt(binary_string, key): 
+
+    #print(binary_string)
+    #Convert binary string to bytes 
+    num_bytes = (len(binary_string) + 7) // 8
+    byte_data = int(binary_string, 2).to_bytes(num_bytes, byteorder='big')
+    my_bytes = bytes(a ^ b for a, b in zip(byte_data, key))
+    binary_data = ''.join(format(byte, '08b') for byte in my_bytes) 
+
+   
+    global pixel_count
+    pixel_count += 1
+    if (pixel_count % 10000) == 0:
+        print("Number of pixels converted: " + str(pixel_count))
+
+
+    return binary_data 
+
+
+
 
 if __name__ == "__main__":
     main()
