@@ -42,7 +42,6 @@ def encrypt_pixel(rgb_tuple):
 
 def xor_encrypt(binary_string, key): 
 
-    #print(binary_string)
     #Convert binary string to bytes 
     num_bytes = (len(binary_string) + 7) // 8
     byte_data = int(binary_string, 2).to_bytes(num_bytes, byteorder='big')
@@ -50,6 +49,7 @@ def xor_encrypt(binary_string, key):
     binary_data = ''.join(format(byte, '08b') for byte in my_bytes) 
 
    
+    # Increment pixel count and print progress every 10000 pixels
     global pixel_count
     pixel_count += 1
     if (pixel_count % 10000) == 0:
