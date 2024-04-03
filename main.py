@@ -92,11 +92,7 @@ def diffuse_bytes(diffusion_bytes: str) -> str:
         raise Exception("Binary Data is too large")
 
     return binary_data
-
-
-
-
-    
+ 
 
 def encrypt_pixel(rgb_tuple):
     binary_string = rgb_to_binary(rgb_tuple)
