@@ -50,17 +50,16 @@ def xor_encrypt(binary_string: str, key: bytes):
     return binary_data 
 
 def diffuse_bytes(diffusion_bytes: str) -> str:
-
+    # Step 1: Invert the bits
     inverted_bytes = ""
-
     for character in diffusion_bytes:
         if character == '0':
             inverted_bytes += '1'
         else:
             inverted_bytes += '0'
     
-
-    # Convert the binary string to a list of characters
+    # Step 2: Swap adjacent bits
+    # Convert the inverted binary string to a list of characters
     binary_list = list(inverted_bytes)
     
     # Iterate through the list, swapping adjacent characters
@@ -70,15 +69,22 @@ def diffuse_bytes(diffusion_bytes: str) -> str:
     # Join the list back into a string
     swapped_binary_string = ''.join(binary_list)
 
-    #shift bytes
+    # Step 3: Shift bytes
+    # Convert the swapped binary string to bytes
     num_bytes = (len(swapped_binary_string) + 7) // 8
     byte_data = int(swapped_binary_string, 2).to_bytes(num_bytes, byteorder='big')
+    
+    # Convert bytes back to integer
     int_data = int.from_bytes(byte_data, byteorder='big')
+    # Mask and shift the integer
     int_data = (int_data & 0x1fffff) >> 24
-
+    
+    # Convert the shifted integer back to bytes
     shifted_byte_data = int_data.to_bytes(2, byteorder='big')
+    # Convert bytes to binary string
     binary_data = ''.join(format(byte, '08b') for byte in shifted_byte_data)
 
+    # Padding if necessary
     padding = 24 - len(binary_data)
     if padding <= 24:
         binary_data = ('0' * padding) + binary_data
@@ -86,6 +92,7 @@ def diffuse_bytes(diffusion_bytes: str) -> str:
         raise Exception("Binary Data is too large")
 
     return binary_data
+
 
 
 
