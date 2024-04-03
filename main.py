@@ -31,22 +31,13 @@ def rgb_to_binary(rgb_tuple):
     binary_string = r_bin + g_bin + b_bin
     return binary_string
 
-def encrypt_pixel(rgb_tuple):
-    binary_string = rgb_to_binary(rgb_tuple)
-    encrypted_binary = xor_encrypt(binary_string, encryption_key)
-    # Convert encrypted binary string back to RGB tuple
-    encrypted_r = int(encrypted_binary[:8], 2)
-    encrypted_g = int(encrypted_binary[8:16], 2)
-    encrypted_b = int(encrypted_binary[16:], 2)
-    return (encrypted_r, encrypted_g, encrypted_b)
-
-def xor_encrypt(binary_string, key): 
+def xor_encrypt(binary_string: str, key: bytes): 
 
     #Convert binary string to bytes 
     num_bytes = (len(binary_string) + 7) // 8
     byte_data = int(binary_string, 2).to_bytes(num_bytes, byteorder='big')
-    my_bytes = bytes(a ^ b for a, b in zip(byte_data, key))
-    binary_data = ''.join(format(byte, '08b') for byte in my_bytes) 
+    xor_bytes = bytes(a ^ b for a, b in zip(byte_data, key)) #This xor's the bytes
+    binary_data = ''.join(format(byte, '08b') for byte in xor_bytes) #convert to string binary
 
    
     # Increment pixel count and print progress every 10000 pixels
@@ -58,7 +49,57 @@ def xor_encrypt(binary_string, key):
 
     return binary_data 
 
+def diffuse_bytes(diffusion_bytes: str) -> str:
 
+    inverted_bytes = ""
+
+    for character in diffusion_bytes:
+        if character == '0':
+            inverted_bytes += '1'
+        else:
+            inverted_bytes += '0'
+    
+
+    # Convert the binary string to a list of characters
+    binary_list = list(inverted_bytes)
+    
+    # Iterate through the list, swapping adjacent characters
+    for i in range(0, len(binary_list) - 1, 2):
+        binary_list[i], binary_list[i+1] = binary_list[i+1], binary_list[i]
+    
+    # Join the list back into a string
+    swapped_binary_string = ''.join(binary_list)
+
+    #shift bytes
+    num_bytes = (len(swapped_binary_string) + 7) // 8
+    byte_data = int(swapped_binary_string, 2).to_bytes(num_bytes, byteorder='big')
+    int_data = int.from_bytes(byte_data, byteorder='big')
+    int_data = (int_data & 0x1fffff) >> 24
+
+    shifted_byte_data = int_data.to_bytes(2, byteorder='big')
+    binary_data = ''.join(format(byte, '08b') for byte in shifted_byte_data)
+
+    padding = 24 - len(binary_data)
+    if padding <= 24:
+        binary_data = ('0' * padding) + binary_data
+    else:
+        raise Exception("Binary Data is too large")
+
+    return binary_data
+
+
+
+    
+
+def encrypt_pixel(rgb_tuple):
+    binary_string = rgb_to_binary(rgb_tuple)
+    encrypted_binary: str = xor_encrypt(binary_string, encryption_key)
+    binary_diffused: str = diffuse_bytes(encrypted_binary)
+    # Convert encrypted binary string back to RGB tuple
+    encrypted_r = int(binary_diffused[:8], 2)
+    encrypted_g = int(binary_diffused[8:16], 2)
+    encrypted_b = int(binary_diffused[16:], 2)
+    return (encrypted_r, encrypted_g, encrypted_b)
 
 
 if __name__ == "__main__":
