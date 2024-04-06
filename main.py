@@ -8,18 +8,22 @@ pixel_count = 0
 def main():
     img = Image.open("krab.jpg")
     pix = img.load()
-
-    # Iterate over each pixel
-    for x in range(img.size[0]):
-        for y in range(img.size[1]):
-            #Encrypt pixel RGB values
-            encrypted_rgb = encrypt_pixel(pix[x,y])
-            #update pixel with encrypted values
-            pix[x, y] = encrypted_rgb
+    
+    # Encrypt image
+    encrypt_image(img, pix)
 
     # Save encrypted image
     img.save("encrypted_krab.jpg")
-    print("Image encrypted and saved.")           
+    print("Image encrypted and saved.") 
+    
+    # Decrypt image
+    img = Image.open("encrypted_krab.jpg")
+    pix = img.load()
+    decrypt_image(img, pix)
+    
+    # Save decrypted image
+    img.save("decrypted_krab.jpg")
+    print("Image decrypted and saved.")
 
 def rgb_to_binary(rgb_tuple):
     r, g, b = rgb_tuple
@@ -33,20 +37,17 @@ def rgb_to_binary(rgb_tuple):
 
 def xor_encrypt(binary_string: str, key: bytes): 
 
-    #Convert binary string to bytes 
+    # Convert binary string to bytes 
     num_bytes = (len(binary_string) + 7) // 8
     byte_data = int(binary_string, 2).to_bytes(num_bytes, byteorder='big')
     xor_bytes = bytes(a ^ b for a, b in zip(byte_data, key)) #This xor's the bytes
     binary_data = ''.join(format(byte, '08b') for byte in xor_bytes) #convert to string binary
 
-   
     # Increment pixel count and print progress every 10000 pixels
     global pixel_count
     pixel_count += 1
     if (pixel_count % 10000) == 0:
         print("Number of pixels converted: " + str(pixel_count))
-
-
     return binary_data 
 
 def diffuse_bytes(diffusion_bytes: str) -> str:
@@ -90,10 +91,8 @@ def diffuse_bytes(diffusion_bytes: str) -> str:
         binary_data = ('0' * padding) + binary_data
     else:
         raise Exception("Binary Data is too large")
-
     return binary_data
  
-
 def encrypt_pixel(rgb_tuple):
     binary_string = rgb_to_binary(rgb_tuple)
     encrypted_binary: str = xor_encrypt(binary_string, encryption_key)
@@ -104,6 +103,49 @@ def encrypt_pixel(rgb_tuple):
     encrypted_b = int(binary_diffused[16:], 2)
     return (encrypted_r, encrypted_g, encrypted_b)
 
+def xor_decrypt(binary_string: str, key: bytes):
+    return xor_encrypt(binary_string, key)
+
+def diffuse_decrypt(diffusion_bytes: str) -> str:
+    # Step 3: Reverse the shifting process
+    num_bytes = len(diffusion_bytes) // 8
+    byte_data = int(diffusion_bytes, 2).to_bytes(num_bytes, byteorder='big')
+    # Convert bytes back to integer
+    int_data = int.from_bytes(byte_data, byteorder='big')
+    # Shift the integer to the left
+    int_data = (int_data & 0x1fffff) >> 24
+    # Convert the shifted integer back to bytes
+    shifted_byte_data = int_data.to_bytes(num_bytes, byteorder='big')
+    # Convert bytes to binary string
+    binary_data = ''.join(format(byte, '08b') for byte in shifted_byte_data)
+    return binary_data
+    
+def decrypt_pixel(rgb_tuple):
+    binary_string = rgb_to_binary(rgb_tuple)
+    decrypted_diffused = diffuse_decrypt(binary_string)
+    decrypted_xor = xor_decrypt(decrypted_diffused, encryption_key)
+    decrypted_r = int(decrypted_xor[:8], 2)
+    decrypted_g = int(decrypted_xor[8:16], 2)
+    decrypted_b = int(decrypted_xor[16:], 2)
+    return (decrypted_r, decrypted_g, decrypted_b)
+
+def encrypt_image(img, pix):
+    # Iterate over each pixel
+    for x in range(img.size[0]):
+        for y in range(img.size[1]):
+            #Encrypt pixel RGB values
+            encrypted_rgb = encrypt_pixel(pix[x,y])
+            #update pixel with encrypted values
+            pix[x, y] = encrypted_rgb
+            
+def decrypt_image(img, pix):
+    # Iterate over each pixel
+    for x in range(img.size[0]):
+        for y in range(img.size[1]):
+            # Decrypt pixel RGB values
+            decrypted_rgb = decrypt_pixel(pix[x,y])
+            #update pixel with encrypted values
+            pix[x, y] = decrypted_rgb
 
 if __name__ == "__main__":
     main()
