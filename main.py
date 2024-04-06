@@ -48,6 +48,7 @@ def xor_encrypt(binary_string: str, key: bytes):
     pixel_count += 1
     if (pixel_count % 10000) == 0:
         print("Number of pixels converted: " + str(pixel_count))
+    
     return binary_data 
 
 def diffuse_bytes(diffusion_bytes: str) -> str:
