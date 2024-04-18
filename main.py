@@ -108,6 +108,7 @@ def xor_decrypt(binary_string: str, key: bytes):
     #Step 1: Convert binary string to bytes like what was done in the diffuse_decryption function
 
     #Step 2: xor bytes using this and key: xor_bytes = bytes(a ^ b for a, b in zip(byte_data, key))
+    #Test Comment delete
 
     #Step 3: return binary string
 
