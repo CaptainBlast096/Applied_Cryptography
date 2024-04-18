@@ -78,8 +78,9 @@ def diffuse_bytes(diffusion_bytes: str) -> str:
     
     # Convert bytes back to integer
     int_data = int.from_bytes(byte_data, byteorder='big')
+    int_data = int_data % 65536
     # Mask and shift the integer
-    int_data = (int_data & 0x1fffff) >> 24
+    int_data = (int_data & 0x1fffff)
     
     # Convert the shifted integer back to bytes
     shifted_byte_data = int_data.to_bytes(2, byteorder='big')
