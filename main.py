@@ -108,17 +108,33 @@ def xor_decrypt(binary_string: str, key: bytes):
     return xor_encrypt(binary_string, key)
 
 def diffuse_decrypt(diffusion_bytes: str) -> str:
-    # Step 3: Reverse the shifting process
-    num_bytes = len(diffusion_bytes) // 8
-    byte_data = int(diffusion_bytes, 2).to_bytes(num_bytes, byteorder='big')
-    # Convert bytes back to integer
-    int_data = int.from_bytes(byte_data, byteorder='big')
-    # Shift the integer to the left
-    int_data = (int_data & 0x1fffff) >> 24
-    # Convert the shifted integer back to bytes
-    shifted_byte_data = int_data.to_bytes(num_bytes, byteorder='big')
-    # Convert bytes to binary string
-    binary_data = ''.join(format(byte, '08b') for byte in shifted_byte_data)
+
+    #Step 1: Take the binary string diffusion_bytes and convert to bytes
+    #I would suggest to put this into var 
+
+    #Step 2: Take bytes and convert to int using the int.from_bytes() function
+    #Again put it in a var
+
+    #Step 3: Use this to shift back into place (<Int var here>, byteorder='big') << 24) & 0xffffff
+    #Note: I don't know if this will get the exact values back.
+    #I don't know if the bytes will change in the background since we are storing the image separably
+    #If problems arise try to copy the bytes after they are shifted on line 80 into a list
+    #And use them here
+
+    #Step 4: Convert back to bytes using this: shifted_byte_data = int_data.to_bytes(2, byteorder='big')
+
+    #Step 5: Convert back to binary string using this: binary_data = ''.join(format(byte, '08b') for byte in shifted_byte_data)
+
+    #Step 6: Find a way to swap back the binary values from the loop on line 67
+    #Example of the swapping loop: 1001 --> 0110
+    #Example of the reverse loop: 0110 --> 1001
+
+    #Step 7: Invert the binary numbers in the binary string
+    # Example: 0011 --> 1100
+
+    #Place holder variable. Change if need be or delete if need be
+    binary_data = ""
+
     return binary_data
     
 def decrypt_pixel(rgb_tuple):
