@@ -105,7 +105,15 @@ def encrypt_pixel(rgb_tuple):
     return (encrypted_r, encrypted_g, encrypted_b)
 
 def xor_decrypt(binary_string: str, key: bytes):
-    return xor_encrypt(binary_string, key)
+    #Step 1: Convert binary string to bytes like what was done in the diffuse_decryption function
+
+    #Step 2: xor bytes using this and key: xor_bytes = bytes(a ^ b for a, b in zip(byte_data, key))
+
+    #Step 3: return binary string
+
+    #Change var as necessary
+    decrypted_string = ""
+    return decrypted_string
 
 def diffuse_decrypt(diffusion_bytes: str) -> str:
 
@@ -132,6 +140,7 @@ def diffuse_decrypt(diffusion_bytes: str) -> str:
     #Step 7: Invert the binary numbers in the binary string
     # Example: 0011 --> 1100
 
+    #Step 8: Return the binary string
     #Place holder variable. Change if need be or delete if need be
     binary_data = ""
 
