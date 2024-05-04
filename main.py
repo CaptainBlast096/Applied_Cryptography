@@ -17,7 +17,7 @@ def split_image(image, chunk_size):
 
 def main():
     # Load image
-    image = Image.open("krab.jpg")
+    image = Image.open("Images\\krab.jpg")
 
     # Define chunk size and string key
     chunk_size = 100
@@ -38,10 +38,10 @@ def main():
 
     # Display or save the new image
     new_image.show()
-    new_image.save("image.jpg")
+    new_image.save("Images\\image.jpg")
 
     # Load image
-    encrypted_image = Image.open("image.jpg")
+    encrypted_image = Image.open("Images\\image.jpg")
 
     # Split encrypted image into chunks
     encrypted_chunks = split_image(encrypted_image, 100)
@@ -58,7 +58,7 @@ def main():
 
     # Display or save the new image
     decrypted_image.show()
-    decrypted_image.save("decrypted_image.jpg")
+    decrypted_image.save("Images\\decrypted_image.jpg")
 
 
 if __name__ == "__main__":
