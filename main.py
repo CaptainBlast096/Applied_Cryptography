@@ -1,9 +1,5 @@
 import encrypt
 import decrypt
-import hashlib
-from PIL import Image, ImageEnhance
-import numpy as np
-
 
 # Splitting up the image into chunks
 def split_image(image, chunk_size):
