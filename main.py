@@ -1,5 +1,6 @@
 import encrypt
 import decrypt
+from PIL import Image
 
 # Splitting up the image into chunks
 def split_image(image, chunk_size):
